@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Useless Dino Game</title>
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      font-family: monospace;
+      background: #fefefe;
+      margin: 0;
+      overflow: hidden;
+    }
+    canvas {
+      background: #eaeaea;
+      display: block;
+      margin: 0 auto;
+      border: 2px dashed #555;
+    }
+    #sleep-bar {
+      width: 200px;
+      height: 12px;
+      background: #ccc;
+      border: 1px solid #555;
+      margin: 10px auto;
+      position: relative;
+    }
+    #sleep-progress {
+      height: 100%;
+      background: #888;
+      width: 0%;
+    }
+    #score, #cookies {
+      text-align: center;
+      margin: 4px;
+    }
+  </style>
+</head>
+<body>
+  <h2 style="text-align:center">Useless Dino Game</h2>
+  <div id="score">Score: 0</div>
+  <div id="cookies">Cookies: 0</div>
+  <div id="sleep-bar">
+    <div id="sleep-progress"></div>
+  </div>
+  <canvas id="gameCanvas" width="800" height="200"></canvas>
+
+  <script>
+    const canvas = document.getElementById("gameCanvas");
+    const ctx = canvas.getContext("2d");
+    let dinoY = 150;
+    let velocity = 0;
+    let gravity = 1;
+    let isJumping = false;
+    let score = 0;
+    let cookies = 0;
+    let sleepLevel = 0;
+
+    function jump() {
+      velocity = -15;
+    }
+
+    function drawDino() {
+      ctx.fillStyle = "green";
+      ctx.fillRect(50, dinoY, 40, 40);
+    }
+
+    function drawObstacle(x) {
+      ctx.fillStyle = "brown";
+      ctx.fillRect(x, 150, 20, 50);
+    }
+
+    function drawCookie(x) {
+      ctx.fillStyle = "chocolate";
+      ctx.beginPath();
+      ctx.arc(x, 140, 10, 0, Math.PI * 2);
+      ctx.fill();
+    }
+
+    let obstacles = [];
+    let cookiesArr = [];
+    let frame = 0;
+
+    function gameLoop() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      frame++;
+
+      // Update dino position
+      velocity += gravity;
+      dinoY += velocity;
+      if (dinoY > 150) {
+        dinoY = 150;
+        isJumping = false;
+      }
+
+      drawDino();
+
+      // Obstacles
+      if (frame % 100 === 0) {
+        obstacles.push(800);
+      }
+
+      for (let i = 0; i < obstacles.length; i++) {
+        obstacles[i] -= 5;
+        drawObstacle(obstacles[i]);
+        if (obstacles[i] < 90 && obstacles[i] > 10 && dinoY >= 130) {
+          alert("You tripped over useless logic!");
+          document.location.reload();
+        }
+      }
+
+      // Cookies
+      if (frame % 150 === 0) {
+        cookiesArr.push(800);
+      }
+
+      for (let i = 0; i < cookiesArr.length; i++) {
+        cookiesArr[i] -= 4;
+        drawCookie(cookiesArr[i]);
+        if (cookiesArr[i] < 90 && cookiesArr[i] > 50 && dinoY < 160) {
+          cookies++;
+          cookiesArr.splice(i, 1);
+          updateCookies();
+          giveUselessQuote();
+        }
+      }
+
+      score++;
+      sleepLevel += 0.03;
+      updateScore();
+      updateSleepBar();
+
+      if (sleepLevel >= 100) {
+        alert("You fell asleep from boredom. Game Over.");
+        document.location.reload();
+      }
+
+      requestAnimationFrame(gameLoop);
+    }
+
+    function updateScore() {
+      document.getElementById("score").textContent = `Score: ${score}`;
+    }
+
+    function updateCookies() {
+      document.getElementById("cookies").textContent = `Cookies: ${cookies}`;
+    }
+
+    function updateSleepBar() {
+      const bar = document.getElementById("sleep-progress");
+      bar.style.width = sleepLevel + "%";
+    }
+
+    function giveUselessQuote() {
+      const quotes = [
+        "Loading inspiration...",
+        "You're still here?",
+        "Collect more cookies. Why? We don't know.",
+        "Did you know dinosaurs probably didn't eat cookies?",
+        "Why are you still playing this?",
+        "404: Reward not found",
+      ];
+      if (Math.random() < 0.5) {
+        alert(quotes[Math.floor(Math.random() * quotes.length)]);
+      }
+    }
+
+    document.addEventListener("keydown", (e) => {
+      if (e.code === "Space") {
+        alert("Nope. Spacebar doesn't work. Try something unexpected.");
+        return;
+      }
+
+      const chaos = ["jump", "duck", "doNothing", "quote", "confuse"];
+      const action = chaos[Math.floor(Math.random() * chaos.length)];
+
+      switch (action) {
+        case "jump":
+          if (!isJumping) {
+            isJumping = true;
+            jump();
+          }
+          break;
+        case "duck":
+          alert("You're crouching. Maybe. Probably not.");
+          break;
+        case "doNothing":
+          break;
+        case "quote":
+          giveUselessQuote();
+          break;
+        case "confuse":
+          alert("Confusion intensifies...");
+          break;
+      }
+    });
+
+    gameLoop();
+  </script>
+</body>
+</html>
