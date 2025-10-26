@@ -25,30 +25,20 @@ void insertFirst(Node* head, int data){
     head->link=newnode;
 }
 
-void sortList(Node* head){
-    if (head->link==NULL || head->link->link==NULL){
-        printf("List Empty or Too Short. Sorting not Possible");
-        return;
-    }
-    while(1){
-        int flag=0;
-        Node* current=head->link;
-        while(current->link!=NULL){
-        if (current->data>current->link->data){
-            int temp=current->data;
-            current->data=current->link->data;
-            current->link->data=temp;
-            flag=1;
-        }
-        current=current->link;
-        }
+void reverseList(Node* head){
+    Node* prev=NULL;
+    Node* current=head->link;
+    Node* next=NULL;
 
-        if (flag==0){
-            break;
-        }
+    while(current!=NULL){
+        next=current->link;
+        current->link=prev;
+        prev=current;
+        current=next;
     }
+    head->link=prev;
+    printf("List Reversed Successfully\n");
 }
-
 
 void display(Node* head){
     if (head->link==NULL){
@@ -70,7 +60,7 @@ void main(){
     while(1){
         printf("enter your choice\n");
         printf("1.Insert\n");
-        printf("2.Sort\n");
+        printf("2.Reverse\n");
         printf("3.Display\n");
         scanf("%d",&ch);
 
@@ -81,7 +71,7 @@ void main(){
                 insertFirst(head,n);
                 break;
             case 2:
-                sortList(head);
+                reverseList(head);
                 break;
             case 3:
                 display(head);

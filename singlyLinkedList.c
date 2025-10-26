@@ -128,6 +128,19 @@ void sortList(node *head){
     printf("List sorted in ascending order.\n");
 }
 
+void mergeList(node* head1, node* head2){
+    if (head1->link==NULL){
+        head->link=head2->link;
+        return;
+    }
+    node* current=head1->link;
+    while (current->link!=NULL){
+        current=current->link;
+    }
+    current->link=head2->link;
+    printf("Lists merged successfully.\n");
+}
+
 // Main function
 int main() {
     node* head = createHead();
@@ -142,7 +155,8 @@ int main() {
         printf("5. Display\n");
         printf("6. Reverse\n");
         printf("7. Sort\n");
-        printf("8. Exit\n");
+        print("8. Merge\n");
+        printf("9. Exit\n");
         printf("Enter your choice: ");
         scanf("%d", &choice);
 
@@ -173,6 +187,20 @@ int main() {
             sortList(head);
             break;
         case 8:
+            {
+                node* head2 = createHead();
+                int n, val;
+                printf("Enter number of elements in second list: ");
+                scanf("%d", &n);
+                for (int i = 0; i < n; i++) {
+                    printf("Enter value %d: ", i + 1);
+                    scanf("%d", &val);
+                    insertLast(head2, val);
+                }
+                mergeList(head, head2);
+                break;
+            }
+        case 9:
             printf("Exiting...\n");
             exit(0);
         default:
