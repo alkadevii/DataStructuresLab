@@ -8,21 +8,15 @@ typedef struct node {
 
 node* head = NULL;
 
-node* createHead() {
-    node *h = malloc(sizeof(node));
-    h->link = NULL;
-    return h;
-}
-
-node* createNode(int data) {
+node* createNode() {
     node *newnode = malloc(sizeof(node));
-    newnode->value = data;
     newnode->link = NULL;
     return newnode;
 }
 
 void insertLast(node *head, int data) {
-    node *newnode = createNode(data);
+    node *newnode = createNode();
+    newnode->value=data;
     node *current = head;
 
     while (current->link != NULL) {
@@ -75,7 +69,7 @@ void pop() {
 }
 
 int main() {
-    head = createHead();
+    head = createNode();
     int ch, data;
 
     while (1) {

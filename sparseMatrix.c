@@ -1,94 +1,114 @@
 #include<stdio.h>
-void readSparseMatrix(int a[][3],int nonZero){
-    for (int i=0;i<nonZero;i++){
-        printf("enter row, col and value (in order)");
-        scanf("%d %d %d",&a[i][0],&a[i][1],&a[i][2]);
+#include<stdlib.h>
+#define MAX 100
+
+void readMatrix(int rows,int cols,int matrix[rows][cols]){
+    for (int i=0;i<rows;i++){
+        for (int j=0;j<cols;j++){
+            scanf("%d",&matrix[i][j]);
+        }
     }
 }
 
-void printSparseMatrix(int a[][3],int nonZero){
+int convertToSparse(int rows,int cols,int matrix[rows][cols],int sparse[][3]){
+    int k=0;
+    for (int i=0;i<rows;i++){
+        for (int j=0;j<cols;j++){
+            if (matrix[i][j]!=0){
+                sparse[k][0]=i;
+                sparse[k][1]=j;
+                sparse[k][2]=matrix[i][j];
+                k++;
+            }
+        }
+    }
+    return k;
+}
+
+void printSparseMatrix(int sparse[MAX][3], int nonZero) {
     printf("Row Col Value\n");
-    for (int i=0;i<nonZero;i++){
-        printf("%d   %d   %d\n",a[i][0],a[i][1],a[i][2]);
-    }           
-
+    for (int i = 0; i < nonZero; i++)
+        printf("%d   %d   %d\n", sparse[i][0], sparse[i][1], sparse[i][2]);
 }
 
-void transposeSparse(int a[][3], int t[][3], int nonZero) {
-    for (int i = 0; i < nonZero; i++) {
-        t[i][0] = a[i][1]; 
-        t[i][1] = a[i][0];
-        t[i][2] = a[i][2];
+void transposeSparse(int sparse[][3],int transpose[][3],int nonzero){
+    for (int i=0;i<nonzero;i++){
+        transpose[i][0]=sparse[i][1];
+        transpose[i][1]=sparse[i][0];
+        transpose[i][2]=sparse[i][2];
     }
 }
 
-int addSparse(int a[][3],int b[][3],int c[][3],int n1,int n2){
+int addSparse(int A[][3],int B[][3],int C[][3],int n1,int n2){
     int i=0,j=0,k=0;
     while (i<n1 && j<n2){
-        if (a[i][0]==b[j][0] && a[i][1]==b[j][1]){
-            c[k][0]=a[i][0];
-            c[k][1]=a[i][1];
-            c[k][2]=a[i][2]+b[j][2];
+        if (A[i][0]==B[j][0] && A[i][1]==B[j][1]){
+            C[k][0]=A[i][0];
+            C[k][1]=A[i][1];
+            C[k][2]=A[i][2]+B[j][2];
             i++;
             j++;
-        }else if (a[i][0]<b[i][0] || a[i][0]==b[i][0] && a[i][1]<b[j][1]){
-            c[k][0]=a[i][0];
-            c[k][1]=a[i][1];
-            c[k][2]=a[i][2];
+        }else if(A[i][0]<B[j][0] || A[i][0]==B[j][0] && A[i][1]<B[j][1]){
+            C[k][0]=A[i][0];
+            C[k][1]=A[i][1];
+            C[k][2]=A[i][2];
             i++;
         }else{
-            c[k][0]=b[j][0];
-            c[k][1]=b[j][1];
-            c[k][2]=b[j][2];
+            C[k][0]=B[j][0];
+            C[k][1]=B[j][1];
+            C[k][2]=B[j][2];
             j++;
         }
         k++;
     }
 
-    while (i<n1){
-        c[k][0]=a[i][0];
-        c[k][1]=a[i][1];
-        c[k][2]=a[i][2];
-        i++;
-        k++;
+     while (i < n1) {
+        C[k][0] = A[i][0];
+        C[k][1] = A[i][1];
+        C[k][2] = A[i][2];
+        i++; k++;
     }
 
-    while (j<n2){
-        c[k][0]=b[j][0];
-        c[k][1]=b[j][1];
-        c[k][2]=b[j][2];
-        j++;
-        k++;
+    while (j < n2) {
+        C[k][0] = B[j][0];
+        C[k][1] = B[j][1];
+        C[k][2] = B[j][2];
+        j++; k++;
     }
 
     return k;
 }
+void main(){
+    int rows1,cols1,rows2,cols2;
+    
+    printf("Enter rows and cols of matrix A");
+    scanf("%d %d",&rows1,&cols1);
+    int A[rows1][cols1];
+    printf("enter elements of Matrix A");
+    readMatrix(rows1,cols1,A);
 
-void main() {
-    int n1, n2;
-    printf("Enter number of non-zero elements in matrix A: ");
-    scanf("%d", &n1);
-    int a[n1][3];
-    readSparseMatrix(a, n1);
+    printf("Enter rows and cols of matrix B");
+    scanf("%d %d",&rows2,&cols2);
+    int B[rows2][cols2];
+    printf("enter elements of Matrix B");
+    readMatrix(rows2,cols2,B);
 
-    printf("Enter number of non-zero elements in matrix B: ");
-    scanf("%d", &n2);
-    int b[n2][3];
-    readSparseMatrix(b, n2);
+    int sparseA[MAX][3],sparseB[MAX][3];
+    int nA = convertToSparse(rows1, cols1, A, sparseA);
+    int nB = convertToSparse(rows2, cols2, B, sparseB);
 
-    printf("\nMatrix A:\n");
-    printSparseMatrix(a, n1);
-    printf("\nMatrix B:\n");
-    printSparseMatrix(b, n2);
+    printf("\nSparse Matrix A:\n");
+    printSparseMatrix(sparseA, nA);
+    printf("\nSparse Matrix B:\n");
+    printSparseMatrix(sparseB, nB);
 
-    int c[n1 + n2][3];
-    int n3 = addSparse(a, b, c, n1, n2);
+    int transposeA[MAX][3];
+    transposeSparse(sparseA, transposeA, nA);
+    printf("\nTranspose of A (Sparse):\n");
+    printSparseMatrix(transposeA, nA);
 
-    printf("\nSum of A and B:\n");
-    printSparseMatrix(c, n3);
-
-    int t[n1][3];
-    transposeSparse(a, t, n1);
-    printf("\nTranspose of A:\n");
-    printSparseMatrix(t, n1);
+    int sparseC[MAX][3];
+    int nC=addSparse(sparseA,sparseB,sparseC,nA,nB);
+    printf("Sum of A and B \n");
+    printSparseMatrix(sparseC, nC);
 }
