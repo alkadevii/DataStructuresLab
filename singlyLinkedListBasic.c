@@ -12,12 +12,6 @@ Node* createNode(){
     return newnode;
 }
 
-Node* createHead(){
-    Node* head=(Node*)malloc(sizeof(Node));
-    head->link=NULL;
-    return head;
-}
-
 void insertFirst(Node* head,int data){
     Node* newnode=createNode();
     newnode->data=data;
@@ -195,7 +189,7 @@ void display(Node* head){
 
 void main(){
     int ch,n,key;
-    Node* head=createHead();
+    Node* head=createNode();
 
     while(1){
         printf("enter your choice\n");
