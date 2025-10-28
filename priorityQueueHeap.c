@@ -79,6 +79,85 @@ void serveCustomer(){
 
 }
 
+#include<stdio.h>
+#include<stdlib.h>
+#include<string.h>
+
+#define MAX 100
+
+typedef struct customer{
+    char name[50];
+    int priority;
+}customer;
+
+customer heap[MAX];
+int size=0;
+
+int getPriority(char type[]){
+    if (strcmp(type,"differently_abled")==0) return 1;
+    else if (strcmp(type,"senior")==0) return 2;
+    else if (strcmp(type,"defence")==0) return 3;
+    return 4;
+}
+
+void swap(customer *a,customer *b){
+    customer temp=*a;
+    *a=*b;
+    *b=temp;
+}
+
+void heapifyUp(int i){
+    while (i>0 && heap[(i-1)/2].priority>heap[i].priority){
+        swap(&heap[i],&heap[(i-1)/2]);
+        i=(i-1)/2;
+    }
+}
+
+void heapifyDown(){
+    int i=0;
+    while (1){
+        int smallest=i;
+        int left=(2*i)+1;
+        int right=(2*i)+2;
+
+        if (left<size && heap[left].priority<heap[smallest].priority)
+            smallest=left;
+        if (right<size && heap[right].priority<heap[smallest].priority)
+            smallest=right;
+        if (smallest!=i){
+            swap(&heap[smallest],&heap[i]);
+            i=smallest;
+        }else{
+            break;
+        }
+    }
+}
+
+void insert(char name[],char type[]){
+    if (size==MAX-1){
+        printf("queue is full\n");
+        return;
+    }
+    customer newCustomer;
+    strcpy(newCustomer.name,name);
+    newCustomer.priority=getPriority(type);
+    int i=size;
+    heap[size++]=newCustomer;
+    heapifyUp(i);
+    printf("customer added");
+}
+
+void serveCustomer(){
+    if (size==0){
+        printf("no customer to serve");
+        return;
+    }
+    printf("serving customer %s with priority %d",heap[0].name,heap[0].priority);
+    heap[0]=heap[size-1];
+    size--;
+    heapifyDown();
+}
+
 void display() {
     if (size == 0) {
         printf("Queue is empty.\n");
