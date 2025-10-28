@@ -2,17 +2,17 @@
 #include <stdlib.h>
 #include <string.h>
 
-struct node {
+typedef struct node {
     char word[50];
     char meaning[200];
     struct node *lchild, *rchild;
-};
+}node;
 
-struct node *root = NULL;
+node* root = NULL;
 
 // Function to create a new node
-struct node* createNode(char *word, char *meaning) {
-    struct node *newNode = (struct node*) malloc(sizeof(struct node));
+node* createNode(char *word, char *meaning) {
+    node *newNode = (node*) malloc(sizeof(node));
     strcpy(newNode->word, word);
     strcpy(newNode->meaning, meaning);
     newNode->lchild = newNode->rchild = NULL;
@@ -20,7 +20,7 @@ struct node* createNode(char *word, char *meaning) {
 }
 
 // Function to insert a word-meaning pair
-struct node* insert(struct node *root, char *word, char *meaning) {
+node* insert(node *root, char *word, char *meaning) {
     if (root == NULL)
         return createNode(word, meaning);
 
@@ -35,7 +35,7 @@ struct node* insert(struct node *root, char *word, char *meaning) {
 }
 
 // Function to search for a word
-void search(struct node *root, char *word) {
+void search(node *root, char *word) {
     if (root == NULL) {
         printf("\nWord not found in dictionary.\n");
         return;
@@ -53,7 +53,7 @@ void search(struct node *root, char *word) {
 }
 
 // Function to display dictionary (in alphabetical order)
-void inorder(struct node *root) {
+void inorder(node *root) {
     if (root != NULL) {
         inorder(root->lchild);
         printf("\nWord: %s\nMeaning: %s\n", root->word, root->meaning);

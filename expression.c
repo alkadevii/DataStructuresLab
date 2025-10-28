@@ -38,11 +38,11 @@ struct node *tree(char pf[])
     int i = 0;
 
     while (pf[i] != '\0') {
-        if (isalnum(pf[i])) {        // Operand (could be multiple chars)
+        if (isalnum(pf[i])) {        
             char operand[20];
             int j = 0;
 
-            while (isalnum(pf[i])) { // CHANGED: collect full operand
+            while (isalnum(pf[i])) { 
                 operand[j++] = pf[i++];
             }
             operand[j] = '\0';
